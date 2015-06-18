@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://user1:pass1@ds035167.mongolab.com:35167/words');
 //var conn = mongoose.connection;
 
-var translator = require('bingtranslator');
-//var sequenty = require ('sequenty');
+//var translator = require('bingtranslator');
+var sequenty = require ('sequenty');
 
 
 var eMailsSchema = require('./user_schema').eMailsSchema;
