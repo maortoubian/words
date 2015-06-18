@@ -1,19 +1,22 @@
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://user1:pass1@ds035167.mongolab.com:35167/words');
-var conn = mongoose.connection;
+//var conn = mongoose.connection;
 
-var translator = require('bingtranslator');
-var sequenty = require ('sequenty');
+//var translator = require('bingtranslator');
+//var sequenty = require ('sequenty');
 
 
 var eMailsSchema = require('./user_schema').eMailsSchema;
 mongoose.model('eMails', eMailsSchema);
-var facebookSchema = require('./user_schema').facebookSchema;
-mongoose.model('facebook', facebookSchema);
-var whatsappSchema = require('./user_schema').whatsappSchema;
-mongoose.model('whatsapp', whatsappSchema);
-var smsSchema = require('./user_schema').smsSchema;
-mongoose.model('sms', smsSchema);
+
+// var facebookSchema = require('./user_schema').facebookSchema;
+// mongoose.model('facebook', facebookSchema);
+
+// var whatsappSchema = require('./user_schema').whatsappSchema;
+// mongoose.model('whatsapp', whatsappSchema);
+
+// var smsSchema = require('./user_schema').smsSchema;
+// mongoose.model('sms', smsSchema);
 
 
 // var credentials = {
