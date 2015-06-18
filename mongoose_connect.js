@@ -3,12 +3,13 @@ mongoose.connect('mongodb://user1:pass1@ds035167.mongolab.com:35167/words');
 //var conn = mongoose.connection;
 
 //var translator = require('bingtranslator');
-var translator = require('google-translate');
-var sequenty = require ('sequenty');
+var translator = require('mstranslator');
+
+//var sequenty = require ('sequenty');
 
 
-var eMailsSchema = require('./user_schema').eMailsSchema;
-mongoose.model('eMails', eMailsSchema);
+//var eMailsSchema = require('./user_schema').eMailsSchema;
+//mongoose.model('eMails', eMailsSchema);
 
 // var facebookSchema = require('./user_schema').facebookSchema;
 // mongoose.model('facebook', facebookSchema);
