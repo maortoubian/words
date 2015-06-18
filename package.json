@@ -1,0 +1,17 @@
+{
+  "name": "webserver",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bingtranslator": "0.0.7",
+    "express": "^4.12.4",
+    "mongoose": "^4.0.5",
+    "sequenty": "0.0.1"
+  }
+}
