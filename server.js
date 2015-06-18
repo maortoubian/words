@@ -1,7 +1,7 @@
 var express = require('express');
 var mongoose = require('./mongoose_connect');
 var app = express();
-
+var translator = require('bingtranslator');
 
 app.get('/', function (req, res) {
   res.send('Hello World')
