@@ -25,9 +25,6 @@ var smsSchema = new Schema({
 	hint: String
 }, {collection: 'SMS'});
 
-// console.log("required paths: " + eMailsSchema.requiredPaths());
-// console.log("indexes: " + JSON.stringify(eMailsSchema.indexes()));
-
 exports.eMailsSchema = eMailsSchema;
 exports.facebookSchema = facebookSchema;
 exports.whatsappSchema = whatsappSchema;

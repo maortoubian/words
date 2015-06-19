@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://user1:pass1@ds035167.mongolab.com:35167/words');
 var conn = mongoose.connection;
 
+//   clientId: 'KerensAPI',     /* Client ID from the registered app */
+//   clientSecret: 'vmV0OJZCxq9MnA1BFiw0KtjobwmtV65f1DondEGrpO8='  /* Client Secret from the registered app */
 
 var translator = require('bing-translate').init({
     client_id: 'KerensAPI', 
@@ -21,13 +23,6 @@ mongoose.model('whatsapp', whatsappSchema);
 
 var smsSchema = require('./user_schema').smsSchema;
 mongoose.model('sms', smsSchema);
-
-
-// var credentials = {
-//   clientId: 'KerensAPI',     /* Client ID from the registered app */
-//   clientSecret: 'vmV0OJZCxq9MnA1BFiw0KtjobwmtV65f1DondEGrpO8='  /* Client Secret from the registered app */
-// }
-
 
 var all = {
     words: []
