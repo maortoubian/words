@@ -3,12 +3,17 @@ mongoose.connect('mongodb://user1:pass1@ds035167.mongolab.com:35167/words');
 //var conn = mongoose.connection;
 
 //var translator = require('bingtranslator');
-var translator = require('google-translate');
+var translator = require('./lib/bing-translate.js');
 var sequenty = require ('sequenty');
 
 
 var eMailsSchema = require('./user_schema').eMailsSchema;
 mongoose.model('eMails', eMailsSchema);
+
+// var bt = require('./lib/bing-translate.js').init({
+//     client_id: 'KerensAPI', 
+//     client_secret: 'vmV0OJZCxq9MnA1BFiw0KtjobwmtV65f1DondEGrpO8='
+//   });
 
 // var facebookSchema = require('./user_schema').facebookSchema;
 // mongoose.model('facebook', facebookSchema);
@@ -70,6 +75,9 @@ mongoose.model('eMails', eMailsSchema);
 // 	function translateSmsWords (cb) {
 // 		 var transSmsWords = function (n) {
 // 		      if (n < (wordsArr.length)) {
+	bt.translate('This hotel is located close to the centre of Paris.', 'en', 'ro', function(err, res){
+  console.log(err, res);
+});
 // 		          translator.translate(credentials, wordsArr[n], 'he', 'en', function (err, translated) {
 // 					  	if (err) {
 // 					    	console.log('error', err);
