@@ -1,28 +1,26 @@
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://user1:pass1@ds035167.mongolab.com:35167/words');
-//var conn = mongoose.connection;
+var conn = mongoose.connection;
 
-//var translator = require('bingtranslator');
-var translator = require('./lib/bing-translate.js');
+
+var translator = require('bing-translate').init({
+    client_id: 'KerensAPI', 
+    client_secret: 'vmV0OJZCxq9MnA1BFiw0KtjobwmtV65f1DondEGrpO8='
+ });
 var sequenty = require ('sequenty');
 
 
 var eMailsSchema = require('./user_schema').eMailsSchema;
 mongoose.model('eMails', eMailsSchema);
 
-// var bt = require('./lib/bing-translate.js').init({
-//     client_id: 'KerensAPI', 
-//     client_secret: 'vmV0OJZCxq9MnA1BFiw0KtjobwmtV65f1DondEGrpO8='
-//   });
+var facebookSchema = require('./user_schema').facebookSchema;
+mongoose.model('facebook', facebookSchema);
 
-// var facebookSchema = require('./user_schema').facebookSchema;
-// mongoose.model('facebook', facebookSchema);
+var whatsappSchema = require('./user_schema').whatsappSchema;
+mongoose.model('whatsapp', whatsappSchema);
 
-// var whatsappSchema = require('./user_schema').whatsappSchema;
-// mongoose.model('whatsapp', whatsappSchema);
-
-// var smsSchema = require('./user_schema').smsSchema;
-// mongoose.model('sms', smsSchema);
+var smsSchema = require('./user_schema').smsSchema;
+mongoose.model('sms', smsSchema);
 
 
 // var credentials = {
@@ -31,93 +29,91 @@ mongoose.model('eMails', eMailsSchema);
 // }
 
 
-// var all = {
-//     words: []
-// };
+var all = {
+    words: []
+};
 
-// var transArr=[];
-// var hintsArr=[];
-// var wordsArr=[];
-// var favArr=[];
-// var voiceArr=[];
+var transArr=[];
+var hintsArr=[];
+var wordsArr=[];
+var favArr=[];
+var voiceArr=[];
 
-// conn.on('error', function (err) {
-// 	console.log('connection error' + err);
-// 	mongoose.disconnect();
-// });
-
-// mongoose.connection.once('open', function() {
-// 	console.log('connected');
-
-// 	var eMails = this.model('eMails');
-// 	var facebook = this.model('facebook');
-// 	var whatsapp = this.model('whatsapp');
-// 	var sms = this.model('sms');
-
-
-// 	function getSmsWords (cb)
-// 	{
-// 		var query = sms.find();
-// 		query.exec(function (err,docs) {
-// 			for (var i in docs) {
-// 				hintsArr.push(docs[i].hint);
-// 				wordsArr.push(docs[i].word);
-
-// 				if (docs[i].favorite == 1) favArr.push(true);
-// 				else favArr.push(false);
-// 			}
-// 			cb();
-// 		});
-// 	}
-
-
-
-// 	function translateSmsWords (cb) {
-// 		 var transSmsWords = function (n) {
-// 		      if (n < (wordsArr.length)) {
-	bt.translate('This hotel is located close to the centre of Paris.', 'en', 'ro', function(err, res){
-  console.log(err, res);
+conn.on('error', function (err) {
+	console.log('connection error' + err);
+	mongoose.disconnect();
 });
-// 		          translator.translate(credentials, wordsArr[n], 'he', 'en', function (err, translated) {
-// 					  	if (err) {
-// 					    	console.log('error', err);
-// 					  	}
-// 					  	else {
-// 					  		transArr.push(translated);
-// 					  		transSmsWords(n + 1);
-// 					  	}
-// 		          });      
-// 		       }
-// 		       else cb();
-// 		  }
-// 	  	transSmsWords(0);  //start the recursive function
-// 	}
+
+mongoose.connection.once('open', function() {
+	console.log('connected');
+
+	var eMails = this.model('eMails');
+	var facebook = this.model('facebook');
+	var whatsapp = this.model('whatsapp');
+	var sms = this.model('sms');
 
 
-// 	function printTransArr (cb)	{// just to check the translate array
-//    	    cb();
-// 	}
+	function getSmsWords (cb)
+	{
+		var query = sms.find();
+		query.exec(function (err,docs) {
+			for (var i in docs) {
+				hintsArr.push(docs[i].hint);
+				wordsArr.push(docs[i].word);
+
+				if (docs[i].favorite == 1) favArr.push(true);
+				else favArr.push(false);
+			}
+			cb();
+		});
+	}
 
 
-// 	function mongoDisconnect (){
-// 		mongoose.disconnect();
-// 	}
 
-// 	sequenty.run([getSmsWords, translateSmsWords, printTransArr, mongoDisconnect]);
+ 	function translateSmsWords (cb) {
+		 var transSmsWords = function (n) {
+		      if (n < (wordsArr.length)) {
 
-// });
+		          translator.translate(wordsArr[n], 'he', 'en', function (err, translated) {
+					  	if (err) {
+					    	console.log('error', err);
+					  	}
+					  	else {
+					  		transArr.push(translated.translated_text);
+					  		transSmsWords(n + 1);
+					  	}
+		          });      
+		       }
+		       else cb();
+		  }
+	  	transSmsWords(0);  //start the recursive function
+	}
 
-// exports.getWords = function(){	
 
-// 	all.words = [];
+	function printTransArr (cb)	{// just to check the translate array
+   	    cb();
+	}
 
-// 	for (var i in wordsArr) {
-// 		all.words.push({ 
-// 			"heb"	: wordsArr[i],
-//         	"other"	: transArr[i],
-//         	"hint"  : hintsArr[i],
-//         	"favorite" : favArr[i]
-//   		});
-// 	}
-// 	return	all;
-// };
+
+	function mongoDisconnect (){
+		mongoose.disconnect();
+	}
+
+	sequenty.run([getSmsWords, translateSmsWords, printTransArr, mongoDisconnect]);
+
+});
+
+exports.getWords = function(){	
+
+	all.words = [];
+
+	for (var i in wordsArr) {
+		all.words.push({ 
+			"heb"	: wordsArr[i],
+        	"other"	: transArr[i],
+        	"hint"  : hintsArr[i],
+        	"favorite" : favArr[i]
+  		});
+	}
+	return	all;
+};
