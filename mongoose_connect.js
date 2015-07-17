@@ -1,5 +1,6 @@
 var sequenty = require ('sequenty');
 var mongoose = require('mongoose');
+var Languages =  require('./Languages.json');
 
 mongoose.connect('mongodb://user1:pass1@ds035167.mongolab.com:35167/words');
 var conn = mongoose.connection;
@@ -26,6 +27,11 @@ var facebook;
 var whatsapp;
 var sms;
 
+var eMailsPicked;
+var facebookPicked;
+var whatsappPicked;
+var smsPicked; 
+
 var all = {
     words: []
 };
@@ -38,11 +44,13 @@ var matrixArr=[];
 var vocabularyArr=[];
 var collectionIDArr=[];
 
+var toLang = '';
 
 conn.on('error', function (err) {
 	console.log('connection error' + err);
 	mongoose.disconnect();
 });
+
 
 mongoose.connection.once('open', function() {
 
@@ -82,41 +90,35 @@ mongoose.connection.once('open', function() {
 			});
 	}
 
-	function translateWords (cb) {
-			 var transWords = function (n) {
-
-			      if (n < (wordsArr.length)) {
-
-			          translator.translate(wordsArr[n], 'he', 'en', function (err, translated) {
-						  	if (err) {
-						    	console.log('error', err);
-						  	}
-						  	else {
-						  		transArr.push(translated.translated_text);
-						  		console.log(translated.translated_text);
-						  		transWords(n + 1);
-						  	}
-			          });      
-			       }
-			  }
-		  	transWords(0);  //start the recursive function
-		  	cb();
-	}
-
-	sequenty.run([getWordsFromMongo,getWordsFromMongo,getWordsFromMongo,getWordsFromMongo,translateWords]);
-
 	function mongoDisconnect (){
 		mongoose.disconnect();
 	}
+
+	sequenty.run([getWordsFromMongo,getWordsFromMongo,getWordsFromMongo,getWordsFromMongo,mongoDisconnect]);
 
 });
 
 exports.chooseCollections = function(facebook,email,whatsapp,phone){
 
+		if(facebook=="true"){facebookPicked = true;}
+		else{facebookPicked = false;}
+		if(email=="true"){eMailsPicked = true;}
+		else{eMailsPicked = false;}
+		if(whatsapp=="true"){whatsappPicked = true;}
+		else{whatsappPicked = false;}
+		if(phone=="true"){smsPicked = true;}
+		else{smsPicked = false;}
+
+		returnCollections();
+
+}
+
+function returnCollections(){
+
 	all.words = [];
 
 	for (var i in wordsArr) {
-		if(facebook=="true"){
+		if(facebookPicked==true){
 				if(collectionIDArr[i]=="facebook"){
 
 					all.words.push({ 
@@ -130,7 +132,7 @@ exports.chooseCollections = function(facebook,email,whatsapp,phone){
 			  		});	
 				}
 		}
-		if(email=="true"){
+		if(eMailsPicked==true){
 				if(collectionIDArr[i]=="eMails"){
 
 					all.words.push({ 
@@ -144,7 +146,7 @@ exports.chooseCollections = function(facebook,email,whatsapp,phone){
 			  		});	
 				}
 		}
-		if(whatsapp=="true"){
+		if(whatsappPicked==true){
 				if(collectionIDArr[i]=="whatsapp"){
 
 					all.words.push({ 
@@ -159,7 +161,7 @@ exports.chooseCollections = function(facebook,email,whatsapp,phone){
 			  		});	
 				}
 		}
-		if(phone=="true"){
+		if(smsPicked==true){
 			if(collectionIDArr[i]=="sms"){
 
 					all.words.push({ 
@@ -227,9 +229,8 @@ exports.updateVocabulary = function(wordForUpd,score){
 		var collectoinName;
 		var collection;
 
-console.log("wordForUpd " +wordForUpd);
-console.log("score " +score);
-
+		console.log("wordForUpd " +wordForUpd);
+		console.log("score " +score);
 
 
 		for(i in all.words){
@@ -277,7 +278,15 @@ exports.removeWord = function(wordForUpd){
 			 	if(all.words[i].heb==wordForUpd){
 
 			 		collectoinName = all.words[i].collection; 
-			 		delete all.words[i];
+			 		
+			 		all.words.splice(i,1);	
+					wordsArr.splice(i,1);
+					transArr.splice(i,1);
+					hintsArr.splice(i,1);
+					favArr.splice(i,1);
+					collectionIDArr.splice(i,1);
+					matrixArr.splice(i,1);
+					vocabularyArr.splice(i,1);
 			 	}
 			}
 
@@ -286,23 +295,66 @@ exports.removeWord = function(wordForUpd){
 			else if(collectoinName=="whatsapp"){collection=whatsapp;}	
 			else if(collectoinName=="sms"){collection=sms;}
 
-			var query = collection.find({'word': wordForUpd});
-			query.exec(function (err,docs) {
+			// var query = collection.find({'word': wordForUpd});
+			// query.exec(function (err,docs) {
 
-					if(docs!=0){
-						console.log("word Found");
-						collection.findOne({'word': wordForUpd},function(err,doc){
-						 	doc.remove({'word': wordForUpd});
-						 	console.log("word Removed");
-						});
-					}
-			});
+			// 		if(docs!=0){
+			// 			console.log("word Found");
+			// 			collection.findOne({'word': wordForUpd},function(err,doc){
+			// 			 	doc.remove({'word': wordForUpd});
+			// 			 	console.log("word Removed");
+			// 			});
+			// 		}
+			// });
 			
 		}
-
 		return 1;
 }
 
+exports.getLanguages = function(){
+	return Languages;
+}
+
+exports.LanguagesToTranslate = function(LanguageFromUser){
+
+	count=0;
+	console.log(toLang);
+
+	if(LanguageFromUser!=toLang){
+
+		toLang = LanguageFromUser;
+		transArr = [];
+
+		function translateWords (cb) {
+				 var transWords = function (n) {
+
+				      if (n < (wordsArr.length)) {
+
+				          translator.translate(wordsArr[n], 'he', toLang, function (err, translated) {
+							  	if (err) {
+							    	console.log('error', err);
+							  	}
+							  	else {
+							  		transArr.push(translated.translated_text);
+							  		transWords(n + 1);
+
+							  		console.log(count+" : "+translated.translated_text);	
+							  		count++;
+
+							  	}
+				          });      
+				       }
+				  }
+			  	transWords(0);  //start the recursive function
+			  	cb();
+		}
+
+		sequenty.run([translateWords]);
+	}
+	return 1;
+}
+  
 exports.getWords = function(){
+	returnCollections();
 	return	all;	
 };

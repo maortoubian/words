@@ -83,6 +83,41 @@ app.get('/remove', function(req,res) {
 
 });
 
+app.get('/getLanguages', function(req,res) {
+
+	var i = mongoose.getLanguages();
+
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Header", "Origin, X-Requested-With,Content-Type, Accept");
+	res.set("Content-Type", "application/json");
+	res.status(200);
+	
+	res.json(i);
+
+});
+
+app.get('/LanguagesToTranslate', function(req,res) {
+
+	var urlObj = url.parse(req.url,true);
+	var query = urlObj.query;
+
+	console.log(query.word);
+	//console.log(query.toLang);
+
+	var i = mongoose.LanguagesToTranslate(query.toLang);
+
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Header", "Origin, X-Requested-With,Content-Type, Accept");
+	res.set("Content-Type", "application/json");
+	res.status(200);
+
+	console.log(i);
+	
+	res.json(i);
+
+});
+
+
 // app.get('/matrix', function(req,res) {
 
 // 	var matrix = require('./matrixArrays'); // reference to the matrix arrays and functions
