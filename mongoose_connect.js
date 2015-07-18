@@ -94,7 +94,7 @@ mongoose.connection.once('open', function() {
 		mongoose.disconnect();
 	}
 
-	sequenty.run([getWordsFromMongo,getWordsFromMongo,getWordsFromMongo,getWordsFromMongo,mongoDisconnect]);
+	sequenty.run([getWordsFromMongo,getWordsFromMongo,getWordsFromMongo,getWordsFromMongo]);
 
 });
 
@@ -224,14 +224,53 @@ exports.updateFavorite = function(wordForUpd,fav){
 		return 1;
 }
 
+exports.updateMatrix = function(wordForUpd,matrix){
+
+		var matrixForDB;
+		var collectoinName;
+		var collection;
+
+		if(matrix=="true"){matrixForDB=1;favoriteForAll=true;}
+		else{matrixForDB=0;favoriteForAll=false;}
+
+		for(i in all.words){
+		 	if(all.words[i].heb==wordForUpd){
+		 		collectoinName = all.words[i].collection;
+		 		all.words[i].matrix = 1;
+		 	}
+		}
+
+		for(i in wordsArr){
+		 	if(wordsArr[i]==wordForUpd){
+		 		matrixArr[i] = 1;
+		 	}
+		}
+
+
+		if(collectoinName=="facebook"){collection=facebook;}
+		else if(collectoinName=="eMails"){collection=eMails;}
+		else if(collectoinName=="whatsapp"){collection=whatsapp;}	
+		else if(collectoinName=="sms"){collection=sms;}
+
+		var query = collection.find({'word': wordForUpd});
+		query.exec(function (err,docs) {
+				if(docs!=0){
+					console.log("word Found");
+					collection.findOne({'word': wordForUpd},function(err,doc){
+						var query = doc.update({$set:{matrix:matrixForDB}});
+						query.exec(function (err,doc) {
+							console.log("matrix has changed");
+						});
+					});
+				}
+		});
+		return 1;
+}
+
 exports.updateVocabulary = function(wordForUpd,score){
 
 		var collectoinName;
 		var collection;
-
-		console.log("wordForUpd " +wordForUpd);
-		console.log("score " +score);
-
 
 		for(i in all.words){
 		 	if(all.words[i].heb==wordForUpd){
@@ -295,17 +334,17 @@ exports.removeWord = function(wordForUpd){
 			else if(collectoinName=="whatsapp"){collection=whatsapp;}	
 			else if(collectoinName=="sms"){collection=sms;}
 
-			// var query = collection.find({'word': wordForUpd});
-			// query.exec(function (err,docs) {
+			var query = collection.find({'word': wordForUpd});
+			query.exec(function (err,docs) {
 
-			// 		if(docs!=0){
-			// 			console.log("word Found");
-			// 			collection.findOne({'word': wordForUpd},function(err,doc){
-			// 			 	doc.remove({'word': wordForUpd});
-			// 			 	console.log("word Removed");
-			// 			});
-			// 		}
-			// });
+					if(docs!=0){
+						console.log("word Found");
+						collection.findOne({'word': wordForUpd},function(err,doc){
+						 	doc.remove({'word': wordForUpd});
+						 	console.log("word Removed");
+						});
+					}
+			});
 			
 		}
 		return 1;

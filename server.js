@@ -1,5 +1,6 @@
 var express = require('express');
 var mongoose = require('./mongoose_connect');
+var matrix = require('./matrixArrays');
 var app = express();
 var url = require('url');
 
@@ -58,8 +59,6 @@ app.get('/collection', function(req,res) {
 	res.header("Access-Control-Allow-Header", "Origin, X-Requested-With,Content-Type, Accept");
 	res.set("Content-Type", "application/json");
 	res.status(200);
-
-	console.log(i);
 	
 	res.json(i);
 
@@ -77,8 +76,6 @@ app.get('/remove', function(req,res) {
 	res.set("Content-Type", "application/json");
 	res.status(200);
 
-	console.log(i);
-	
 	res.json(i);
 
 });
@@ -101,9 +98,6 @@ app.get('/LanguagesToTranslate', function(req,res) {
 	var urlObj = url.parse(req.url,true);
 	var query = urlObj.query;
 
-	console.log(query.word);
-	//console.log(query.toLang);
-
 	var i = mongoose.LanguagesToTranslate(query.toLang);
 
 	res.header("Access-Control-Allow-Origin", "*");
@@ -111,32 +105,40 @@ app.get('/LanguagesToTranslate', function(req,res) {
 	res.set("Content-Type", "application/json");
 	res.status(200);
 
-	console.log(i);
-	
 	res.json(i);
 
 });
 
+app.get('/matrix', function(req,res) {
 
-// app.get('/matrix', function(req,res) {
+	var urlObj = url.parse(req.url,true);
+	var query = urlObj.query;
 
-// 	var matrix = require('./matrixArrays'); // reference to the matrix arrays and functions
+	var i = matrix.getMatrixArrays(query.word);
 
-// 	var urlObj = url.parse(req.url,true);
-// 	var query = urlObj.query;
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Header", "Origin, X-Requested-With,Content-Type, Accept");
+	res.set("Content-Type", "application/json");
+	res.status(200);
+
+	res.json(i);
+
+});
+
+app.get('/MatrixUpdate', function(req,res) {
 	
-// 	console.log(query.word);
-// 	var i = matrix.getMatrixArrays(query.word);
+	var urlObj = url.parse(req.url,true);
+	var query = urlObj.query;
+	var i =	mongoose.updateMatrix(query.word,query.matrix);
 
-// 	res.header("Access-Control-Allow-Origin", "*");
-// 	res.header("Access-Control-Allow-Header", "Origin, X-Requested-With,Content-Type, Accept");
-// 	//app.set('json spaces',4);
-// 	res.set("Content-Type", "application/json");
-// 	res.status(200);
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Header", "Origin, X-Requested-With,Content-Type, Accept");
+	res.set("Content-Type", "application/json");
+	res.status(200);
 
-// 	res.json(i);
+	res.json(i);
 
-// });
+});
 
 app.listen(process.env.PORT || 3000);
 console.log("web service is listening on port 3000");
