@@ -18,36 +18,6 @@ app.get('/', function(req,res) {
 
 });
 
-app.get('/upd', function(req,res) {
-
-	var urlObj = url.parse(req.url,true);
-	var query = urlObj.query;
-	var i =	mongoose.updateFavorite(query.word,query.favorite);
-
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Header", "Origin, X-Requested-With,Content-Type, Accept");
-	res.set("Content-Type", "application/json");
-	res.status(200);
-
-	res.json(i);
-
-});
-
-app.get('/vocabularyUpdate', function(req,res) {
-	
-	var urlObj = url.parse(req.url,true);
-	var query = urlObj.query;
-	var i =	mongoose.updateVocabulary(query.word,query.score);
-
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Header", "Origin, X-Requested-With,Content-Type, Accept");
-	res.set("Content-Type", "application/json");
-	res.status(200);
-
-	res.json(i);
-
-});
-
 app.get('/collection', function(req,res) {
 
 	var urlObj = url.parse(req.url,true);
@@ -125,11 +95,11 @@ app.get('/matrix', function(req,res) {
 
 });
 
-app.get('/MatrixUpdate', function(req,res) {
+app.get('/updateDB', function(req,res) {
 	
 	var urlObj = url.parse(req.url,true);
 	var query = urlObj.query;
-	var i =	mongoose.updateMatrix(query.word,query.matrix);
+	var i =	mongoose.updateDB(query.word,query.score,query.game);
 
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Header", "Origin, X-Requested-With,Content-Type, Accept");
@@ -139,6 +109,8 @@ app.get('/MatrixUpdate', function(req,res) {
 	res.json(i);
 
 });
+
+
 
 app.listen(process.env.PORT || 3000);
 console.log("web service is listening on port 3000");

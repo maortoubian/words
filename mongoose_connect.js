@@ -180,108 +180,32 @@ function returnCollections(){
 	return all;
 };
 
-exports.updateFavorite = function(wordForUpd,fav){
+exports.updateDB = function(wordForUpd,score,whichValue){
 
-		var favoriteForDB;
+		var valueForDB;
 		var collectoinName;
 		var collection;
 
-		if(fav=="true"){favoriteForDB=1;favoriteForAll=true;}
-		else{favoriteForDB=0;favoriteForAll=false;}
+		if(score=="true"){valueForDB=1;}
+		else{valueForDB=0;}
 
 		for(i in all.words){
 		 	if(all.words[i].heb==wordForUpd){
 		 		collectoinName = all.words[i].collection;
-		 		all.words[i].favorite = favoriteForAll;
-		 	}
-		}
 
-		for(i in wordsArr){
-		 	if(wordsArr[i]==wordForUpd){	
-		 		favArr[i] = favoriteForAll;
-		 	}
-		}
+		 		if(whichValue==1){all.words[i].favorite = valueForDB;}
+		 		if(whichValue==2){all.words[i].vocabulary = valueForDB;}
+		 		if(whichValue==3){all.words[i].matrix = valueForDB;}
 
-
-		if(collectoinName=="facebook"){collection=facebook;}
-		else if(collectoinName=="eMails"){collection=eMails;}
-		else if(collectoinName=="whatsapp"){collection=whatsapp;}	
-		else if(collectoinName=="sms"){collection=sms;}
-
-		var query = collection.find({'word': wordForUpd});
-		query.exec(function (err,docs) {
-
-				if(docs!=0){
-					console.log("word Found");
-					collection.findOne({'word': wordForUpd},function(err,doc){
-						var query = doc.update({$set:{favorite:favoriteForDB}});
-						query.exec(function (err,doc) {
-							console.log("favorite has changed");
-						});
-					});
-				}
-		});
-		return 1;
-}
-
-exports.updateMatrix = function(wordForUpd,matrix){
-
-		var matrixForDB;
-		var collectoinName;
-		var collection;
-
-		if(matrix=="true"){matrixForDB=1;favoriteForAll=true;}
-		else{matrixForDB=0;favoriteForAll=false;}
-
-		for(i in all.words){
-		 	if(all.words[i].heb==wordForUpd){
-		 		collectoinName = all.words[i].collection;
-		 		all.words[i].matrix = 1;
 		 	}
 		}
 
 		for(i in wordsArr){
 		 	if(wordsArr[i]==wordForUpd){
-		 		matrixArr[i] = 1;
-		 	}
-		}
 
-
-		if(collectoinName=="facebook"){collection=facebook;}
-		else if(collectoinName=="eMails"){collection=eMails;}
-		else if(collectoinName=="whatsapp"){collection=whatsapp;}	
-		else if(collectoinName=="sms"){collection=sms;}
-
-		var query = collection.find({'word': wordForUpd});
-		query.exec(function (err,docs) {
-				if(docs!=0){
-					console.log("word Found");
-					collection.findOne({'word': wordForUpd},function(err,doc){
-						var query = doc.update({$set:{matrix:matrixForDB}});
-						query.exec(function (err,doc) {
-							console.log("matrix has changed");
-						});
-					});
-				}
-		});
-		return 1;
-}
-
-exports.updateVocabulary = function(wordForUpd,score){
-
-		var collectoinName;
-		var collection;
-
-		for(i in all.words){
-		 	if(all.words[i].heb==wordForUpd){
-		 		collectoinName = all.words[i].collection; 
-		 		all.words[i].vocabulary = score;
-		 	}
-		}
-
-		for(i in wordsArr){
-		 	if(wordsArr[i]==wordForUpd){	
-		 		vocabularyArr[i] = score;
+		 		if(whichValue==1){favArr[i] = valueForDB;}
+		 		if(whichValue==2){vocabularyArr[i] = valueForDB;}
+		 		if(whichValue==3){matrixArr[i] = valueForDB;}
 		 	}
 		}
 
@@ -294,12 +218,29 @@ exports.updateVocabulary = function(wordForUpd,score){
 		query.exec(function (err,docs) {
 
 				if(docs!=0){
+
 					console.log("word Found");
 					collection.findOne({'word': wordForUpd},function(err,doc){
-						var query = doc.update({$set:{vocabulary:score}});
-						query.exec(function (err,doc) {
-							console.log("score vocabulary has changed");
-						});
+
+						if(whichValue==1){
+								var query = doc.update({$set:{favorite:valueForDB}});
+								query.exec(function (err,doc) {
+									console.log("favorite has changed");
+								});
+						}
+						if(whichValue==2){
+								var query = doc.update({$set:{vocabulary:valueForDB}});
+								query.exec(function (err,doc) {
+									console.log("score vocabulary has changed");
+								});
+						}
+						if(whichValue==3){
+								var query = doc.update({$set:{matrix:valueForDB}});
+								query.exec(function (err,doc) {
+									console.log("matrix has changed");
+								});
+						}
+
 					});
 				}
 		});
