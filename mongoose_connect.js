@@ -78,12 +78,9 @@ mongoose.connection.once('open', function() {
 					wordsArr.push(docs[i].word);
 					matrixArr.push(docs[i].matrix);
 					vocabularyArr.push(docs[i].vocabulary);
-
-					if (docs[i].favorite == 1) favArr.push(true);
-					else favArr.push(false);
+					favArr.push(docs[i].favorite);
 
 					collectionIDArr.push(collectionID);
-
 				}
 				collNameArr.pop();
 				cb();
