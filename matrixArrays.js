@@ -13,9 +13,8 @@ var trueVectorIndex = 0, splitStrIndex = 0;
 var errorsCounter = 0;
 
 
-
-function setupWord (wordToMatrix) 
-{
+//converting the word to uppercase and saving the len
+function setupWord (wordToMatrix) {
 	trueVectorIndex = 0, splitStrIndex = 0;
 	trueVector = [];
 
@@ -25,15 +24,14 @@ function setupWord (wordToMatrix)
 	splitStr = word.split("");
 }
 
-
-function init (cb)
-{
+// start by placing the first char in this random place
+function init (cb){
 	for (var i = 0; i < 16; i++)		
 	{ 
 		charInPlace[i] = '*'; 			
 		flags[i] = 0;
 	}				
-	prevLoc = (Math.floor(Math.random() * 16)); // start by placing the first char in this random place
+	prevLoc = (Math.floor(Math.random() * 16)); 
 	charInPlace[prevLoc] = splitStr[splitStrIndex];
 	flags[prevLoc] = 1;
 	splitStrIndex++;
@@ -44,69 +42,57 @@ function init (cb)
 
 
  // when choosing a cell, in which places we can put letter
-function chooseRandomLoc()
-{
+function chooseRandomLoc(){
 	var tempArr;
 
-	if ((prevLoc == 5) || (prevLoc == 6) || (prevLoc == 9) || (prevLoc == 10))
-	{
+	if ((prevLoc == 5) || (prevLoc == 6) || (prevLoc == 9) || (prevLoc == 10)){
 		randomLoc = Math.floor(Math.random() * 9);
 	}
 
-	else if ((prevLoc == 1) || (prevLoc == 2))
-	{
+	else if ((prevLoc == 1) || (prevLoc == 2)){
 		tempArr =[3,4,5,6,7];
 		randomLoc = tempArr[Math.floor(Math.random() * 5)];
 	}
 
-	else if ((prevLoc == 13) || (prevLoc == 14))
-	{
+	else if ((prevLoc == 13) || (prevLoc == 14)){
 		tempArr =[0,1,2,3,7];
 		randomLoc = tempArr[Math.floor(Math.random() * 5)];
 	}
 
-	else if ((prevLoc == 4) || (prevLoc == 8))
-	{
+	else if ((prevLoc == 4) || (prevLoc == 8)){
 		tempArr =[1,2,3,4,5];
 		randomLoc = tempArr[Math.floor(Math.random() * 5)];
 	}
 
-	else if ((prevLoc == 7) || (prevLoc == 11))
-	{
+	else if ((prevLoc == 7) || (prevLoc == 11)){
 		tempArr =[0,1,5,6,7];
 		randomLoc = tempArr[Math.floor(Math.random() * 5)];	
 	}
 
-	else if (prevLoc == 0)
-	{
+	else if (prevLoc == 0){
 		tempArr =[3,4,5];
 		randomLoc = tempArr[Math.floor(Math.random() * 3)];		
 	}
 
-	else if (prevLoc == 3)
-	{
+	else if (prevLoc == 3){
 		tempArr =[5,6,7];
 		randomLoc = tempArr[Math.floor(Math.random() * 3)];		
 	}
 
-	else if (prevLoc == 15)
-	{
+	else if (prevLoc == 15){
 		tempArr =[0,1,7];
 		randomLoc = tempArr[Math.floor(Math.random() * 3)];	
 	}
 
-	else if (prevLoc == 12)
-	{
+	else if (prevLoc == 12){
 		tempArr =[1,2,3];
 		randomLoc = tempArr[Math.floor(Math.random() * 3)];	
 	}		
 }
 
-
-function assignChars (cb)
-{
-	while(splitStrIndex != len)
-	{
+//assigning the letters in the matrix randomly
+function assignChars (cb){
+	while(splitStrIndex != len){
 		chooseRandomLoc();
 
 		if (randomLoc == 0) nextLoc = prevLoc - 5;
@@ -125,13 +111,12 @@ function assignChars (cb)
 			if (errorsCounter > 40) {
 				errorsCounter = 0;
 				setupWord(word);
-				sequenty.run([init, assignChars, printArray, chooseRandom]);
+				sequenty.run([init, assignChars, chooseRandom]);
 			}
 		}
 
 
-		if ((flags[nextLoc] != 1) && (nextLoc > -1)	&& (nextLoc < 16))
-		{
+		if ((flags[nextLoc] != 1) && (nextLoc > -1)	&& (nextLoc < 16)){
 			charInPlace[nextLoc] = splitStr[splitStrIndex];
 			splitStrIndex++;
 			flags[nextLoc] = 1;
@@ -144,13 +129,10 @@ function assignChars (cb)
 	cb();
 }
 
-
-function chooseRandom (cb) // put random letter in the empty places
-{
-	for (var i = 0; i < 16; i++)
-	{
-		if (flags[i] == 0)
-		{
+// put random letter in the empty places
+function chooseRandom (cb) {
+	for (var i = 0; i < 16; i++){
+		if (flags[i] == 0){
 			charInPlace[i] = letters[Math.floor(Math.random() * 26)];
 			flags[i] = 1;
 		}
@@ -158,29 +140,10 @@ function chooseRandom (cb) // put random letter in the empty places
 	cb();
 }
 
-
-function printArray (cb)
-{
-	var index = 0;					
-	console.log("\nWord is: " + word + "\n");
-
-	for (var i = 0; i < 4; i++)			// print array 4X4
-	{
-		for (var j = 0; j < 4; j++)
-		{
-			process.stdout.write(charInPlace[index] + "    ");
-			index++;
-		}
-		console.log("\n");
-	}
-	cb();
-}
-
-
-
+//returning the matrix ready element
 exports.getMatrixArrays = function(wordToMatrix) {	
 	setupWord(wordToMatrix);
-	sequenty.run([init, assignChars, printArray, chooseRandom]);
+	sequenty.run([init, assignChars, chooseRandom]);
 
 	returnValues.returnArrays = [];
 

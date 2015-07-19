@@ -64,6 +64,8 @@ mongoose.connection.once('open', function() {
 	var collArr = new Array(eMails, facebook, whatsapp, sms);
 	var collNameArr = new Array("eMails","facebook","whatsapp","sms");
 
+
+	//getting the data from MongoDB
 	function getWordsFromMongo (cb){
 
 			collectionID=collNameArr[collNameArr.length-1];
@@ -90,6 +92,7 @@ mongoose.connection.once('open', function() {
 			});
 	}
 
+	//disconnecting from MongoDB
 	function mongoDisconnect (){
 		mongoose.disconnect();
 	}
@@ -98,6 +101,7 @@ mongoose.connection.once('open', function() {
 
 });
 
+//checks which collections the user picked and sending hin the data of those collections
 exports.chooseCollections = function(facebook,email,whatsapp,phone){
 
 		if(facebook=="true"){facebookPicked = true;}
@@ -113,6 +117,8 @@ exports.chooseCollections = function(facebook,email,whatsapp,phone){
 
 }
 
+//a function that packing all the words from the collections m there data and transtions 
+//and sending to the user
 function returnCollections(){
 
 	all.words = [];
@@ -180,6 +186,7 @@ function returnCollections(){
 	return all;
 };
 
+//a function that handles the updating of all the DB values: favorites/vocabulary/matrix
 exports.updateDB = function(wordForUpd,score,whichValue){
 
 		var valueForDB;
@@ -247,6 +254,7 @@ exports.updateDB = function(wordForUpd,score,whichValue){
 		return 1;
 }
 
+//a function that deleting the wanted word
 exports.removeWord = function(wordForUpd){
 
 		var collectoinName;
@@ -291,10 +299,12 @@ exports.removeWord = function(wordForUpd){
 		return 1;
 }
 
+//returns the languages Json
 exports.getLanguages = function(){
 	return Languages;
 }
 
+//a function that translate the words of the collections by using reqursive and sequenlty calls
 exports.LanguagesToTranslate = function(LanguageFromUser){
 
 	count=0;
@@ -334,6 +344,7 @@ exports.LanguagesToTranslate = function(LanguageFromUser){
 	return 1;
 }
   
+//returning all the wanted words in Json
 exports.getWords = function(){
 	returnCollections();
 	return	all;	

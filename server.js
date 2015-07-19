@@ -5,7 +5,7 @@ var app = express();
 var url = require('url');
 
 
-
+//root page that sends the user the Json with all the wanted data
 app.get('/', function(req,res) {
 
 	res.header("Access-Control-Allow-Origin", "*");
@@ -18,6 +18,7 @@ app.get('/', function(req,res) {
 
 });
 
+//getting the collection pick from the user
 app.get('/collection', function(req,res) {
 
 	var urlObj = url.parse(req.url,true);
@@ -34,6 +35,7 @@ app.get('/collection', function(req,res) {
 
 });
 
+//getting from the user the word that needs to be delete
 app.get('/remove', function(req,res) {
 
 	var urlObj = url.parse(req.url,true);
@@ -50,6 +52,7 @@ app.get('/remove', function(req,res) {
 
 });
 
+//sending the user the Json with all the languages
 app.get('/getLanguages', function(req,res) {
 
 	var i = mongoose.getLanguages();
@@ -63,6 +66,7 @@ app.get('/getLanguages', function(req,res) {
 
 });
 
+//getting from the user the languages he picked
 app.get('/LanguagesToTranslate', function(req,res) {
 
 	var urlObj = url.parse(req.url,true);
@@ -79,6 +83,7 @@ app.get('/LanguagesToTranslate', function(req,res) {
 
 });
 
+//geting a word from the user and sending him back a json that is ready for the matrix game
 app.get('/matrix', function(req,res) {
 
 	var urlObj = url.parse(req.url,true);
@@ -95,6 +100,7 @@ app.get('/matrix', function(req,res) {
 
 });
 
+//geting from the user the word the score and the game id for saving the value in the DB
 app.get('/updateDB', function(req,res) {
 	
 	var urlObj = url.parse(req.url,true);
