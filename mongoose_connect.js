@@ -193,7 +193,7 @@ exports.updateDB = function(wordForUpd,score,whichValue){
 		 	if(all.words[i].heb==wordForUpd){
 		 		collectoinName = all.words[i].collection;
 
-		 		if(whichValue==1){all.words[i].favorite = valueForDB;}
+		 		if(whichValue==1){all.words[i].favorite = score;}
 		 		if(whichValue==2){all.words[i].vocabulary = valueForDB;}
 		 		if(whichValue==3){all.words[i].matrix = valueForDB;}
 
@@ -203,7 +203,7 @@ exports.updateDB = function(wordForUpd,score,whichValue){
 		for(i in wordsArr){
 		 	if(wordsArr[i]==wordForUpd){
 
-		 		if(whichValue==1){favArr[i] = valueForDB;}
+		 		if(whichValue==1){favArr[i] = score;}
 		 		if(whichValue==2){vocabularyArr[i] = valueForDB;}
 		 		if(whichValue==3){matrixArr[i] = valueForDB;}
 		 	}
