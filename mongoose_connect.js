@@ -54,6 +54,12 @@ conn.on('error', function (err) {
 
 mongoose.connection.once('open', function() {
 
+	getDataFromDB();
+
+});
+
+function getDataFromDB(){
+
 	console.log('connected to mongolab');
 
 	eMails = this.model('eMails');
@@ -64,6 +70,12 @@ mongoose.connection.once('open', function() {
 	var collArr = new Array(eMails, facebook, whatsapp, sms);
 	var collNameArr = new Array("eMails","facebook","whatsapp","sms");
 
+	hintsArr=[];
+	wordsArr=[];
+	favArr=[];
+	matrixArr=[];
+	vocabularyArr=[];
+	collectionIDArr=[];
 
 	//getting the data from MongoDB
 	function getWordsFromMongo (cb){
@@ -99,7 +111,8 @@ mongoose.connection.once('open', function() {
 
 	sequenty.run([getWordsFromMongo,getWordsFromMongo,getWordsFromMongo,getWordsFromMongo]);
 
-});
+}
+
 
 //checks which collections the user picked and sending hin the data of those collections
 exports.chooseCollections = function(facebook,email,whatsapp,phone){
@@ -249,6 +262,7 @@ exports.updateDB = function(wordForUpd,score,whichValue){
 						}
 
 					});
+					getDataFromDB();
 				}
 		});
 		return 1;
@@ -293,6 +307,7 @@ exports.removeWord = function(wordForUpd){
 						 	console.log("word Removed");
 						});
 					}
+					getDataFromDB();
 			});
 			
 		}
